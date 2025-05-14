@@ -14,9 +14,9 @@ Look at the "NAME" column to count the number of disks.
 
 Example output:
 
-root@fmc:/Volume/home/admin# lsblk -d
+**root@fmc:/Volume/home/admin# lsblk -d
 NAME MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
-sda    8:0    0  250G  0 disk 
+sda    8:0    0  250G  0 disk** 
 
 In this example, there is one disk sda
 
@@ -31,7 +31,7 @@ Each disk will be listed as /dev/sdX, /dev/nvmeXnY, or /dev/vdX.
 
 Example output:
 
-Disk /dev/sda: 250 GiB, 268435456000 bytes, 524288000 sectors
+**Disk /dev/sda: 250 GiB, 268435456000 bytes, 524288000 sectors**
 
 Count the number of entries that start with Disk /dev/.
 
