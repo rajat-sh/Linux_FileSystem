@@ -1,5 +1,4 @@
 ### How to check number of hard disks installed in a linux system
-haha
 
 To check the number of hard disks installed on a Linux system, you can use several tools and commands. Below is an overview of some of the most common methods:
 
