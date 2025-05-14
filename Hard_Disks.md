@@ -86,7 +86,7 @@ major minor  #blocks  name
    1       13      16384 ram13
    1       14      16384 ram14
    1       15      16384 ram15
-** 8        0  262144000 sda   **
+ **8        0  262144000 sda   **
    8        1      95232 sda1
    8        2    1000448 sda2
    8        3          1 sda3
