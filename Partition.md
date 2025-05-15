@@ -324,4 +324,107 @@ This diagram helps visualize how the MBR and partition table work together to de
 
 
 
+Following example is from a FMC system
+
+
+Using the "fdisk -l" command 
+
+Disk /dev/sda: 250 GiB, 268435456000 bytes, 524288000 sectors
+Disk model: Virtual disk    
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0x44e4a644
+
+Device     Boot    Start       End   Sectors   Size Id Type
+/dev/sda1  *        2048    192511    190464    93M 83 Linux        ----> This is boot partition notice the boot flag is on
+/dev/sda2         192512   2193407   2000896   977M 82 Linux swap / Solaris -----> This is swap partition
+/dev/sda3        2193408 524287999 522094592   249G  f W95 Ext'd (LBA)  ------->  This extended partition
+/dev/sda5        2195456  10006527   7811072   3.7G 83 Linux
+/dev/sda6       10008576  17819647   7811072   3.7G 83 Linux
+/dev/sda7       17821696 524287999 506466304 241.5G 83 Linux
+
+
+Disklabel type: dos line confirms what partitioning scheme is in use. In this case, it’s MBR.
+
+
+root@fmc:/Volume/home/admin# lsblk 
+NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
+sda      8:0    0   250G  0 disk 
+|-sda1   8:1    0    93M  0 part /boot
+|-sda2   8:2    0   977M  0 part [SWAP]
+|-sda3   8:3    0     1K  0 part 
+|-sda5   8:5    0   3.7G  0 part 
+|-sda6   8:6    0   3.7G  0 part /
+`-sda7   8:7    0 241.5G  0 part /Volume
+
+To list the filesystem type
+
+root@fmc:/Volume/home/admin# df -Th
+Filesystem     Type      Size  Used Avail Use% Mounted on
+/dev/sda6      ext4      3.7G  2.3G  1.2G  67% /
+none           devtmpfs   16G     0   16G   0% /dev
+/dev/sda1      ext4       87M   37M   43M  47% /boot
+/dev/sda7      ext4      237G   72G  154G  32% /Volume
+none           tmpfs      16G  464K   16G   1% /dev/shm
+
+
+The df -h command shows mounted file systems and their sizes. While it doesn't explicitly show unmounted disks, it gives an idea of the storage devices in use. Notice it does not show /dev/sda5 and /dev/sda6 as they are not mounted.
+
+
+root@fmc:/Volume/home/admin# parted -l 
+Model: VMware Virtual disk (scsi)
+Disk /dev/sda: 268GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags: 
+
+Number  Start   End     Size    Type      File system     Flags
+ 1      1049kB  98.6MB  97.5MB  primary   ext4            boot
+ 2      98.6MB  1123MB  1024MB  primary   linux-swap(v1)
+ 3      1123MB  268GB   267GB   extended                  lba
+ 5      1124MB  5123MB  3999MB  logical   ext4
+ 6      5124MB  9124MB  3999MB  logical   ext4
+ 7      9125MB  268GB   259GB   logical   ext4
+
+
+root@fmc:/Volume/home/admin# blkid
+/dev/sda1: LABEL="BOOT" UUID="90b08600-aa0e-428b-a05a-a5e4274d3ed1" BLOCK_SIZE="1024" TYPE="ext4" PARTUUID="44e4a644-01"
+/dev/sda2: UUID="224f7d02-1672-4e38-977c-37d75f04c5e2" TYPE="swap" PARTUUID="44e4a644-02"
+/dev/sda5: LABEL="3D-7.2.7-500" UUID="0f4b477c-474c-40f7-a7a5-b8cfa51b74b6" BLOCK_SIZE="4096" TYPE="ext4" PARTUUID="44e4a644-05"
+/dev/sda6: LABEL="3D-7.4.1-172" UUID="b4624c9d-f797-482a-924d-009491e09a41" BLOCK_SIZE="4096" TYPE="ext4" PARTUUID="44e4a644-06"
+/dev/sda7: LABEL="/Volume" UUID="efb823b5-2089-4f53-b916-0a23f16575c6" BLOCK_SIZE="4096" TYPE="ext4" PARTUUID="44e4a644-07"
+
+
+
+Key information to look for
+Boot partition
+Extended partition
+logical partition/s
+Filesystem Type on each partition
+partitioning scheme
+
+
+
+
+
+
+
+Example Disk Layout
+
+Suppose you have a 500 GB disk. Here’s how it could be partitioned:
+
+Partition Type 	Size 	Filesystem 	Mount Point 	        Description
+MBR 	        512 bytes  N/A 	        N/A 	                Contains bootloader and partition table
+Partition 1 	50 GB 	   ext4 	/ 	        Root filesystem for the Linux OS
+Partition 2 	100 GB 	   ext4 	/home 	        User home directories
+Partition 3 	8 GB 	   swap 	N/A 	        Swap space for virtual memory
+Partition 4 	300 GB 	   Extended 	N/A 	        Container for logical partitions
+Logical 1 	50 GB 	   ext4 	/var 	        Variable data such as logs
+Logical 2 	20 GB 	   ext4 	/tmp 	        Temporary files
+Unallocated 	72 GB 	   N/A 	        N/A 	        Free space for future partitions
+
+
+
 
