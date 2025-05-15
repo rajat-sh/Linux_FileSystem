@@ -184,3 +184,139 @@ Here are some commonly used Linux commands for partitioning and managing disks:
 
 
 
+
+File systems usually are stored on disks. Most disks can be divided up into partitions, with independent file systems on each partition.Sector 0 of the disk is called the MBR (Master Boot Record) and is used to boot the computer. The end of the MBR contains the partition table. This table gives the starting and ending addresses of each partition. One of the partitions in the table may be marked as active. When the computer is booted, the BIOS reads in and executes the code in the MBR. The first thing the MBR program does is locate the active partition, read in its first block, called the boot block, and execute it. The program in the boot block loads the operating system contained in that partition. For uniformity, every partition starts with a boot block, even if it does not contain a bootable operating system. Besides, it might contain one in the some time in the future, so reserving a boot block is a good idea anyway.
+
+
+Here’s a simple text-based diagram of the Master Boot Record (MBR) structure and its Partition Table. The MBR is located at the very beginning of a storage device (the first 512 bytes of the disk) and is essential for booting legacy systems that use the BIOS boot process.
+
++-------------------------+-------------------------+
+|  Bootloader Code        |  446 bytes             |
++-------------------------+-------------------------+
+|  Partition Table Entry 1|  16 bytes              |
++-------------------------+-------------------------+
+|  Partition Table Entry 2|  16 bytes              |
++-------------------------+-------------------------+
+|  Partition Table Entry 3|  16 bytes              |
++-------------------------+-------------------------+
+|  Partition Table Entry 4|  16 bytes              |
++-------------------------+-------------------------+
+|  Boot Signature         |  2 bytes (0x55AA)      |
++-------------------------+-------------------------+
+
+Explanation of MBR Components
+
+    Bootloader Code (446 bytes):
+        This is the first part of the MBR.
+        Contains the machine code (assembly instructions) for bootstrapping the operating system.
+        If the disk is bootable, this code loads the OS or a secondary bootloader.
+
+    Partition Table (64 bytes):
+        Contains 4 entries of 16 bytes each, allowing up to 4 primary partitions.
+        Each entry describes a partition on the disk, including its type, start sector, and size.
+        If more than 4 partitions are needed, one of these entries can describe an extended partition, which can contain additional logical partitions.
+
+    Boot Signature (2 bytes):
+        A magic number (0x55AA) that marks the end of the MBR.
+        Indicates that the disk is bootable and contains a valid MBR.
+
+
+
+Partition Table Entry Structure (16 bytes per entry)
+
+Each partition table entry is 16 bytes long and contains the following fields:
+
+
++----------------+------------------+
+| Boot Flag      | 1 byte          |  (0x80 = bootable, 0x00 = not bootable)
++----------------+------------------+
+| Starting CHS   | 3 bytes         |  (Cylinder, Head, Sector address)
++----------------+------------------+
+| Partition Type | 1 byte          |  (e.g., 0x07 for NTFS, 0x83 for Linux)
++----------------+------------------+
+| Ending CHS     | 3 bytes         |  (Cylinder, Head, Sector address)
++----------------+------------------+
+| Starting LBA   | 4 bytes         |  (Logical Block Address of the partition)
++----------------+------------------+
+| Size in Sectors| 4 bytes         |  (Total number of sectors in the partition)
++----------------+------------------+
+
+Full Text Diagram for MBR and Partition Table
+
+
++-------------------------+
+|  Bootloader Code        | 446 bytes
++-------------------------+
+|  Partition Table Entry 1|
+|   - Boot Flag           | 1 byte
+|   - Starting CHS        | 3 bytes
+|   - Partition Type      | 1 byte
+|   - Ending CHS          | 3 bytes
+|   - Starting LBA        | 4 bytes
+|   - Size in Sectors     | 4 bytes
++-------------------------+
+|  Partition Table Entry 2| 16 bytes
+|   ... same structure ...
++-------------------------+
+|  Partition Table Entry 3| 16 bytes
+|   ... same structure ...
++-------------------------+
+|  Partition Table Entry 4| 16 bytes
+|   ... same structure ...
++-------------------------+
+|  Boot Signature         | 2 bytes (0x55AA)
++-------------------------+
+
+
+Key Points
+
+    The MBR is exactly 512 bytes in size.
+    It supports up to 4 primary partitions because the partition table has space for only 4 entries (16 bytes each).
+    To bypass the 4-partition limit, one of the primary partitions can be an extended partition, which can hold multiple logical partitions.
+    The Boot Signature (0x55AA) is critical for booting; if it’s missing or corrupted, the system won’t recognize the disk as bootable.
+
+
+
+Example
+
+If the disk has two primary partitions and one extended partition, the partition table might look like this:
+
+
+
++-------------------------+-------------------------+
+|  Bootloader Code        |  446 bytes             |
++-------------------------+-------------------------+
+|  Partition 1 (Primary)  |  Boot Flag: 0x80       |
+|                         |  Type: 0x83 (Linux)    |
+|                         |  Start LBA: 2048       |
+|                         |  Size: 100000 sectors  |
++-------------------------+-------------------------+
+|  Partition 2 (Primary)  |  Boot Flag: 0x00       |
+|                         |  Type: 0x07 (NTFS)     |
+|                         |  Start LBA: 102048     |
+|                         |  Size: 200000 sectors  |
++-------------------------+-------------------------+
+|  Partition 3 (Extended) |  Boot Flag: 0x00       |
+|                         |  Type: 0x05 (Extended) |
+|                         |  Start LBA: 302048     |
+|                         |  Size: 400000 sectors  |
++-------------------------+-------------------------+
+|  Partition 4 (Unused)   |  Empty (all 0s)        |
++-------------------------+-------------------------+
+|  Boot Signature         |  2 bytes (0x55AA)      |
++-------------------------+-------------------------+
+
+
+his layout represents a disk with:
+
+    Partition 1: Linux (ext4).
+    Partition 2: Windows (NTFS).
+    Partition 3: Extended partition containing logical partitions.
+    Partition 4: Unused.
+
+
+This diagram helps visualize how the MBR and partition table work together to define the structure of the disk.
+
+
+
+
