@@ -307,7 +307,7 @@ If the disk has two primary partitions and one extended partition, the partition
 +-------------------------+-------------------------+
 
 
-his layout represents a disk with:
+This layout represents a disk with:
 
     Partition 1: Linux (ext4).
     Partition 2: Windows (NTFS).
