@@ -398,6 +398,57 @@ root@fmc:/Volume/home/admin# blkid
 
 
 
+This is from 2600 FMC
+
+Disk /dev/sda: 1.6 TiB, 1796997120000 bytes, 3509760000 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 65536 bytes / 196608 bytes
+Disklabel type: gpt
+Disk identifier: FEFF7CB8-B7BE-4687-955E-F5CAC92161E5
+
+Device        Start        End    Sectors   Size Type
+/dev/sda1      1920    1001855     999936 488.3M EFI System
+/dev/sda2   1001856    3002111    2000256 976.7M Linux swap
+/dev/sda3   3002112   11001983    7999872   3.8G Linux filesystem
+/dev/sda4  11001984   19001855    7999872   3.8G Linux filesystem
+/dev/sda5  19001856 3509759615 3490757760   1.6T Linux filesystem
+
+
+
+root@KSEC-FMC-2600-2:/Volume/home/admin# lsblk
+NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
+sda      8:0    0   1.6T  0 disk 
+|-sda1   8:1    0 488.3M  0 part /boot/EFI
+|-sda2   8:2    0 976.7M  0 part [SWAP]
+|-sda3   8:3    0   3.8G  0 part 
+|-sda4   8:4    0   3.8G  0 part /
+`-sda5   8:5    0   1.6T  0 part /Volume
+sdb      8:16   1  29.7G  0 disk 
+`-sdb1   8:17   1   267M  0 part 
+
+
+root@KSEC-FMC-2600-2:/Volume/home/admin# parted -l
+Model: Cisco UCSC-RAID12G-2GB (scsi)
+Disk /dev/sda: 1797GB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags: 
+
+Number  Start   End     Size    File system     Name     Flags
+ 1      983kB   513MB   512MB   fat32           ESP      boot, esp
+ 2      513MB   1537MB  1024MB  linux-swap(v1)  primary
+ 3      1537MB  5633MB  4096MB  ext4            primary
+ 4      5633MB  9729MB  4096MB  ext4            primary
+ 5      9729MB  1797GB  1787GB  ext4            primary
+
+
+
+
+
+
+
+
 Key information to look for
 Boot partition
 Extended partition
