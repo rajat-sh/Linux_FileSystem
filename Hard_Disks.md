@@ -41,7 +41,7 @@ Disk identifier: 0xea2d3709
 
 Count the number of entries that start with Disk /dev/.
 
-**3. Using the ls /dev/ Command**
+**3. Using the "ls /dev/" Command**
 
 You can manually check the disk devices in the /dev directory.
 
@@ -56,7 +56,7 @@ root@rajat-virtual-machine:/home/rajat# ls /dev/sd* /dev/nvme* 2>/dev/null
  /dev/sda   /dev/sda1   /dev/sda2   /dev/sda5
 
 
-**4. Using the cat /proc/partitions Command**
+**4. Using the "cat /proc/partitions" Command**
 
 The /proc/partitions file contains information about the available block devices.
 
@@ -94,7 +94,7 @@ major minor  #blocks  name
    8        6    3905536 sda6
    8        7  253233152 sda7
 
-**5. Using the df -h Command**
+**5. Using the "df -h" Command**
 
 The df -h command shows mounted file systems and their sizes. While it doesn't explicitly show unmounted disks, it gives an idea of the storage devices in use.
 
@@ -115,7 +115,7 @@ Count the unique devices (/dev/sdX or /dev/nvmeXnY) listed under "Filesystem."
 
 In above example there is one  unique devices sda
 
-**6. Using the dmesg Command**
+**6. Using the "dmesg" Command**
 
 The dmesg command displays kernel logs, which include information about detected disks during boot or when plugged in.
 
@@ -131,7 +131,7 @@ root@fmc:/Volume/home/admin# dmesg | grep -i "disk"
 [    2.090996] sd 0:0:0:0: [sda] Attached SCSI disk
 
 
-**7. Using the ls /sys/block/ Directory**
+**7. Using the "ls /sys/block/" Directory**
 
 The /sys/block/ directory contains information about all block devices.
 
@@ -147,7 +147,7 @@ root@fmc:/Volume/home/admin# ls /sys/block/
 loop0  loop1  loop2  loop3  loop4  loop5  loop6  loop7	ram0  ram1  ram10  ram11  ram12  ram13	ram14  ram15  ram2  ram3  ram4	ram5  ram6  ram7  ram8	ram9  sda
 root@fmc:/Volume/home/admin# 
 
-**8. Using lshw for Hardware Details**
+**8. Using "lshw" for Hardware Details**
 
 The lshw utility provides detailed hardware information, including disks.
 
